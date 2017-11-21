@@ -1,0 +1,24 @@
+/*
+
+My style css
+Author: Daniel Antonio Yepes Ahumedo
+
+*/
+
+body{
+  background-color:  #fafafa;
+}
+.admin{
+  background: #fff;
+}
+
+.img-header{
+  height: 50px;
+  weight: 50px;
+  padding-left: 10%;
+}
+th,td{
+  padding: 8px;
+}
+
+

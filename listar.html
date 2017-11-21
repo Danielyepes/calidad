@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <title>Acceptation</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="">
+                </a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="index.html" class="btn btn-danger">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="listar.html" class="btn btn-primary">
+                            <i class="glyphicon glyphicon-book"></i> Listar</a>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+            <br>
+        </div>
+    </nav>
+    <br>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+
+        <h2 class="form-signin-heading text-center">Lista caso de prueba</h2>
+        <hr>
+        <div class="form-group">
+            <label for="usuarios" class="col-sm-3 control-label">Software</label>
+            <div class="col-sm-9">
+                <select class="form-control" name="software" id="software" onchange="listar()"></select>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="panel-group" id="result"></div>
+    </div>
+    <div class="col-md-4"></div>
+
+</body>
+<script>
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var myObj = JSON.parse(this.responseText);
+            $("#software").append("<option value='0'>Selecciona una opcion</option>");
+            for (x in myObj) {
+                $("#software").append("<option value=" + myObj[x].id + ">" + myObj[x].nombre + "</option>");
+            }
+        }
+    };
+    xmlhttp.open("GET", "script/softwarejson.php", true);
+    xmlhttp.send();
+
+    function listar() {
+        var software = document.getElementById("software").value;
+        var res = " ";
+        var i = 0;
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var myObj = JSON.parse(this.responseText);
+                for (x in myObj) {
+                    if (myObj[x].id_software == software) {
+                        i++;
+                        if (myObj[x].estado == 1) {
+                            res += "<div class='alert alert-warning'> ";
+                        } else if (myObj[x].estado == 2) {
+                            res += "<div class='alert alert-success'> ";
+                        }
+                        res += "<div class='panel-body'>" +
+                            "<strong> id:</strong> <span>" + myObj[x].id + "</span>" +
+                            "<br><strong> Requisito asociado:</strong> <span>" + myObj[x].requisito + "</span>" +
+                            "<br><strong>Nombre:</strong> <span>" + myObj[x].nombre + "</span>" +
+                            "<br><strong>Descripcion:</strong> <span>" + myObj[x].descripcion + "</span>" +
+                            "<br><strong>Fecha:</strong> <span>" + myObj[x].fecha + "</span>" +
+                            "<br><strong>Comentarios:</strong> <span>" + myObj[x].comentarios + "</span>";
+                        if (myObj[x].estado == 1) {
+                            res += "<br><strong>Estado:</strong> <span>En revision</span>";
+                            res +=
+                                '<br><form action="script/update_case.php" method="post"><div class="form- group">' +
+                                '<label for="usuarios" class="col-sm-3 control-label" > Cambiar Estado</label>' +
+                                '<div class="col-sm-12">' +
+                                '<input type="radio" name="estado" value="2">Aprobado<br>' +
+                                '<input type="hidden" name="id" value="' + myObj[x].id + '"><br>' +
+                                '</div>' +
+                                '</div><button class="btn btn-lg btn-primary btn-block" type="submit">Enviar</button> </form>';
+                        } else if (myObj[x].estado == 2) {
+                            res += "<br><strong>Estado:</strong> <span>Aprobado</span>";
+                        }
+                        res += "</div> </div>";
+                    }
+                    res += "<br>";
+                }
+                if(i == 0){
+                    res = "<div class='alert alert-danger'> Este software no tiene casos de prueba asociados</div>";
+                }
+                document.getElementById("result").innerHTML = res;
+            }
+        };
+        xmlhttp.open("GET", "script/casejson.php", true);
+        xmlhttp.send();
+
+    }
+</script>
+
+</html>
