@@ -4,7 +4,8 @@ Software para la realización de pruebas de aceptación
 
 Este permite agregar:
 
-* Casos de prueba
+* Agregar proyectos
+* Agregar casos de prueba a un proyecto
 * Descripción de casos de prueba
 * Evaluación de estos
 
